@@ -1,0 +1,65 @@
+---
+title: "EXCEL CHALLENGE 418"
+subtitle: "R language approach"
+author: "Krzysztof Nowak"
+email: knowak1990@outlook.com
+date: today
+description: "In this document we explore how to solve one of Excel BI challanges with R language"
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
+    toc: true
+    toc-location: left
+    title-block-banner: "lightgray"
+title-block-banner-color: "black"
+editor: visual
+---
+
+# Problem to solve
+
+Pivot the given table for Date / Emp ID combinations with Min and Max Time. Min Time and Max Time will appear in alternate rows. First Min time will appear and then Max time in other row will appear.
+
+## Solution
+
+```{r, warning=FALSE, message=FALSE,echo=FALSE}
+#Load libraries
+library(readxl) #read excel file
+library(tidyverse)
+library(gt)
+library(markdown)
+#load data
+df <- read_excel("Excel_Challenge_418 - Pivot on Min and Max .xlsx",
+  range = "A1:C26",col_types = c("text","guess","date")
+) |> janitor::clean_names()
+
+```
+
+```{r, warning=FALSE, message=FALSE}
+Answer <- df |>
+  mutate(Time = format(as.POSIXct(time), format = "%H:%M"),
+         date = as.Date(date)) |> 
+  # Extract time from datetime column
+  arrange(date, emp_id, time) |> # sort by select columns
+  summarise(
+    Min = min(Time), # Extract min and max time
+    Max = max(Time), .by = c(emp_id, date) # grouping
+  ) |>
+  # Combine min and max to one column
+  pivot_longer(cols = c(Min, Max), values_to = "Min & Max") |>
+  select(-c(name))
+
+```
+
+```{r, warning=FALSE, message=FALSE,echo=FALSE,fig.align='left'}
+
+Answer |>
+  gt() |>
+  cols_label(
+    emp_id = 'Employee ID',
+    date = 'Date',
+    `Min & Max` = 'Min & Max') |>
+  tab_header(title = "Min and max times for employees",
+            subtitle = "Sorted by id and hour") |>
+  tab_source_note(source_note = md("**Source**:Excel BI Challanges")) 
+```
