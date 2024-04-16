@@ -1,0 +1,84 @@
+---
+title: "Biking trends"
+subtitle: "In this document I present my biking trends"
+author: "Krzysztof Nowak"
+email: knowak1990@outlook.com
+date: today
+description: ""
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
+    toc: true
+    toc-location: left
+    title-block-banner: "lightgray"
+    
+title-block-banner-color: "black"
+number-sections: true
+editor: visual
+---
+
+# Introduction
+
+I recently got back into cycling and decided to keep statistics on the distance and duration of my trips.
+
+# Load libraries and custom functions
+
+I work with tidyverse library for most of data manipulation and patchwork to control a way in which charts are presented
+
+```{r, warning=FALSE, message=FALSE,echo=FALSE}
+# Library
+library(tidyverse)
+library(patchwork)
+library(plotly)
+#load custom functions library
+source("bikefunctions.R")
+
+```
+
+```{r, warning=FALSE, message=FALSE,echo=FALSE}
+#Laod data
+DF <- readRDS('Biking')
+
+MaxDistance <- which.max(DF$Distance)
+
+DFText <- DF |>
+  mutate(text = case_when(Index == MaxDistance ~  "Katowice trip", TRUE ~ NA))
+
+
+
+```
+
+```{r, warning=FALSE, message=FALSE,echo=FALSE}
+
+TitleDuration <- 'Time spend on bike'
+TitleDistance <- 'Kilometers traveled by bike'
+TitleKilometershour <- 'Kilometers per hour'
+
+```
+
+::: {.callout-note collapse="true"}
+## Note on custom functions
+
+Please be advised that definition of custom function is available in *bikingfunctions.R* file within this repository
+:::
+
+```{r}
+
+p1 <- ChartLineTemplate(Data = DFText,
+                        xA = "Date",
+                        yA = "Duration",
+                        title = TitleDuration,
+                        Units = "Minutes")
+
+p2 <- ChartLineTemplate(Data = DFText,
+                  xA = "Date",
+                  yA = "Distance",
+                  title = TitleDistance,
+                  Units = "Kilometers") 
+
+(p1/p2)
+```
+
+```{}
+```
