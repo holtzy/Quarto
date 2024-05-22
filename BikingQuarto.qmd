@@ -38,7 +38,7 @@ source("bikefunctions.R")
 
 ```{r, warning=FALSE, message=FALSE,echo=FALSE}
 #Laod data
-DF <- readRDS('Biking')
+DF <- readRDS('Biking.rds')
 
 MaxDistance <- which.max(DF$Distance)
 
