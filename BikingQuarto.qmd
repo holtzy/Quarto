@@ -80,5 +80,5 @@ p2 <- ChartLineTemplate(Data = DFText,
 (p1/p2)
 ```
 
-```{}
+```         
 ```
